@@ -106,6 +106,15 @@ export interface BadgeItem {
   desc: string;
 }
 
+export interface ContributionDay {
+  contributionCount: number;
+  date: string;
+}
+
+export interface ContributionWeek {
+  contributionDays: ContributionDay[];
+}
+
 export interface DashboardResponse {
   mode: 'LIVE' | 'LIVE_CACHED' | 'RATE_LIMIT_DEMO' | 'DEMO_MODE' | 'CLIENT_FALLBACK_DEMO';
   data: {
@@ -113,6 +122,7 @@ export interface DashboardResponse {
     metrics: MetricStats;
     languages: LanguageRatio[];
     pinned: PinnedRepo[];
+    contribution_calendar: ContributionWeek[];
     activity: ActivityEvent[];
     commits: CommitFeed[];
     analytics: AnalyticTimeline;
@@ -123,7 +133,32 @@ export interface DashboardResponse {
   };
 }
 
+const getClientMockWeeks = (): ContributionWeek[] => {
+  const mockWeeks: ContributionWeek[] = [];
+  const currentDate = new Date();
+  currentDate.setDate(currentDate.getDate() - 371);
+  for (let w = 0; w < 53; w++) {
+    const weekDays: ContributionDay[] = [];
+    for (let d = 0; d < 7; d++) {
+      const sinVal = Math.sin(w * 0.4 + d * 0.15);
+      let commitCount = 0;
+      if (sinVal > 0.8) commitCount = 4;
+      else if (sinVal > 0.4) commitCount = 2;
+      else if (sinVal > 0.1) commitCount = 1;
+      
+      weekDays.push({
+        contributionCount: commitCount,
+        date: currentDate.toISOString().split('T')[0]
+      });
+      currentDate.setDate(currentDate.getDate() + 1);
+    }
+    mockWeeks.push({ contributionDays: weekDays });
+  }
+  return mockWeeks;
+};
+
 const CLIENT_MOCK_DATA: DashboardResponse["data"] = {
+  contribution_calendar: getClientMockWeeks(),
   profile: {
     avatar_url: "https://avatars.githubusercontent.com/u/144670000?v=4",
     username: "xxKrishna2609xx",

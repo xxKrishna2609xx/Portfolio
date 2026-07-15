@@ -25,8 +25,33 @@ GITHUB_USERNAME = "xxKrishna2609xx"
 CACHE = {}
 CACHE_TTL = 600  # 10 minutes cache duration
 
+def generate_mock_calendar():
+    import datetime
+    import random
+    start_date = datetime.date.today() - datetime.timedelta(days=371)
+    current_date = start_date
+    mock_weeks = []
+    random.seed(42)
+    for _ in range(53):
+        week_days = []
+        for _ in range(7):
+            rand_val = random.random()
+            commit_count = 0
+            if rand_val > 0.85:
+                commit_count = random.randint(3, 6)
+            elif rand_val > 0.6:
+                commit_count = random.randint(1, 2)
+            week_days.append({
+                "contributionCount": commit_count,
+                "date": current_date.strftime("%Y-%m-%d")
+            })
+            current_date += datetime.timedelta(days=1)
+        mock_weeks.append({"contributionDays": week_days})
+    return mock_weeks
+
 # High-Fidelity Mock Database for Failsafe Fallbacks
 MOCK_DATA = {
+    "contribution_calendar": generate_mock_calendar(),
     "profile": {
         "avatar_url": "https://avatars.githubusercontent.com/u/144670000?v=4",
         "username": GITHUB_USERNAME,
@@ -225,13 +250,207 @@ def fetch_github_dashboard():
             raise Exception("Failed events fetch")
         events = events_res.json()
 
+        # Commits search
+        commits_search = requests.get(
+            f"https://api.github.com/search/commits?q=author:{GITHUB_USERNAME}",
+            headers={**headers, "Accept": "application/vnd.github.cloak-preview"},
+            timeout=5
+        )
+        total_commits = MOCK_DATA["metrics"]["commits"]
+        if commits_search.status_code == 200:
+            total_commits = commits_search.json().get("total_count", total_commits)
+
+        # Pull requests search
+        pr_search = requests.get(
+            f"https://api.github.com/search/issues?q=author:{GITHUB_USERNAME}+type:pr",
+            headers=headers,
+            timeout=5
+        )
+        total_pr = MOCK_DATA["metrics"]["pull_requests"]
+        if pr_search.status_code == 200:
+            total_pr = pr_search.json().get("total_count", total_pr)
+
+        # Issues search
+        issues_search = requests.get(
+            f"https://api.github.com/search/issues?q=author:{GITHUB_USERNAME}+type:issue",
+            headers=headers,
+            timeout=5
+        )
+        total_issues = MOCK_DATA["metrics"]["issues"]
+        if issues_search.status_code == 200:
+            total_issues = issues_search.json().get("total_count", total_issues)
+
+        # Pinned Repositories query via GraphQL
+        graphql_query = """
+        query {
+          user(login: "xxKrishna2609xx") {
+            pinnedItems(first: 6, types: REPOSITORY) {
+              nodes {
+                ... on Repository {
+                  name
+                  description
+                  stargazerCount
+                  forkCount
+                  primaryLanguage {
+                    name
+                  }
+                  repositoryTopics(first: 5) {
+                    nodes {
+                      topic {
+                        name
+                      }
+                    }
+                  }
+                  openIssues: issues(states: OPEN) {
+                    totalCount
+                  }
+                  pushedAt
+                }
+              }
+            }
+          }
+        }
+        """
+        pinned_repos = []
+        try:
+            graphql_res = requests.post(
+                "https://api.github.com/graphql",
+                headers=headers,
+                json={"query": graphql_query},
+                timeout=5
+            )
+            if graphql_res.status_code == 200:
+                res_json = graphql_res.json()
+                nodes = res_json.get("data", {}).get("user", {}).get("pinnedItems", {}).get("nodes", [])
+                for node in nodes:
+                    if node:
+                        topics = [t.get("topic", {}).get("name") for t in node.get("repositoryTopics", {}).get("nodes", []) if t and t.get("topic", {}).get("name")]
+                        pushed_at = node.get("pushedAt", "")
+                        time_str = "recently"
+                        if pushed_at:
+                            time_str = pushed_at[:10]
+                        pinned_repos.append({
+                            "name": node.get("name"),
+                            "description": node.get("description") or "No description provided.",
+                            "topics": topics,
+                            "language": node.get("primaryLanguage", {}).get("name") or "Markdown",
+                            "stars": node.get("stargazerCount", 0),
+                            "forks": node.get("forkCount", 0),
+                            "issues": node.get("openIssues", {}).get("totalCount", 0),
+                            "latest_commit": "Latest changes synced",
+                            "updated": time_str
+                        })
+        except Exception as e:
+            print(f"GraphQL pinned items fetch failed: {e}")
+
+        if not pinned_repos:
+            for r in repos[:4]:
+                pushed_at = r.get("pushed_at", "")
+                time_str = "recently"
+                if pushed_at:
+                    time_str = pushed_at[:10]
+                pinned_repos.append({
+                    "name": r.get("name"),
+                    "description": r.get("description") or "No description provided.",
+                    "topics": r.get("topics", []),
+                    "language": r.get("language") or "Markdown",
+                    "stars": r.get("stargazers_count", 0),
+                    "forks": r.get("forks_count", 0),
+                    "issues": r.get("open_issues_count", 0),
+                    "latest_commit": "Latest changes synced",
+                    "updated": time_str
+                })
+
+        # Contributions Calendar query via GraphQL
+        calendar_query = """
+        query {
+          user(login: "xxKrishna2609xx") {
+            contributionsCollection {
+              contributionCalendar {
+                totalContributions
+                weeks {
+                  contributionDays {
+                    contributionCount
+                    date
+                  }
+                }
+              }
+            }
+          }
+        }
+        """
+        contributions_count = MOCK_DATA["metrics"]["contributions"]
+        current_streak = MOCK_DATA["metrics"]["current_streak"]
+        longest_streak = MOCK_DATA["metrics"]["longest_streak"]
+        contribution_weeks = []
+        try:
+            calendar_res = requests.post(
+                "https://api.github.com/graphql",
+                headers=headers,
+                json={"query": calendar_query},
+                timeout=5
+            )
+            if calendar_res.status_code == 200:
+                calendar_data = calendar_res.json().get("data", {}).get("user", {}).get("contributionsCollection", {}).get("contributionCalendar", {})
+                contributions_count = calendar_data.get("totalContributions", contributions_count)
+                
+                weeks = calendar_data.get("weeks", [])
+                for w in weeks:
+                    contribution_weeks.append({
+                        "contributionDays": [
+                            {
+                                "contributionCount": d.get("contributionCount", 0),
+                                "date": d.get("date", "")
+                            }
+                            for d in w.get("contributionDays", [])
+                        ]
+                    })
+                
+                days = []
+                for w in weeks:
+                    for d in w.get("contributionDays", []):
+                        days.append(d)
+                        
+                days.sort(key=lambda x: x.get("date", ""))
+                
+                # Streak calculation logic
+                longest = 0
+                temp_streak = 0
+                for d in days:
+                    count = d.get("contributionCount", 0)
+                    if count > 0:
+                        temp_streak += 1
+                        if temp_streak > longest:
+                            longest = temp_streak
+                    else:
+                        temp_streak = 0
+                        
+                current = 0
+                for d in reversed(days):
+                    count = d.get("contributionCount", 0)
+                    if count > 0:
+                        current += 1
+                    else:
+                        if current > 0:
+                            break
+                            
+                current_streak = current or current_streak
+                longest_streak = longest or longest_streak
+        except Exception as e:
+            print(f"GraphQL contributions fetch failed: {e}")
+
+        if not contribution_weeks:
+            contribution_weeks = generate_mock_calendar()
+
         # Aggregate live variables from the profile
         total_stars = 0
         total_forks = 0
+        total_watchers = 0
         languages_count = {}
         for r in repos:
             total_stars += r.get("stargazers_count", 0)
             total_forks += r.get("forks_count", 0)
+            total_watchers += r.get("watchers_count", 0)
             lang = r.get("language")
             if lang:
                 languages_count[lang] = languages_count.get(lang, 0) + 1
@@ -271,7 +490,13 @@ def fetch_github_dashboard():
         if not activity:
             activity = MOCK_DATA["activity"]
 
-        # Merge fetched live statistics with premium mock visuals (like the heatmap / charts)
+        total_size = sum(r.get("size", 0) for r in repos)
+        lines_of_code = max(1000, total_size * 50)
+
+        # Calculate community & impact scores dynamically
+        community_score = min(100, 70 + (total_stars * 1) + (total_forks * 2))
+        impact_score = min(100, 65 + (profile.get("followers", 0) * 0.5) + (total_stars * 0.8))
+
         live_dataset = {
             "profile": {
                 "avatar_url": profile.get("avatar_url"),
@@ -291,24 +516,42 @@ def fetch_github_dashboard():
                 "followers": profile.get("followers", 32),
                 "stars": total_stars or MOCK_DATA["metrics"]["stars"],
                 "forks": total_forks or MOCK_DATA["metrics"]["forks"],
-                "commits": MOCK_DATA["metrics"]["commits"],  # Requires massive paginated requests, fallback used
-                "pull_requests": MOCK_DATA["metrics"]["pull_requests"],
-                "issues": MOCK_DATA["metrics"]["issues"],
+                "commits": total_commits,
+                "pull_requests": total_pr,
+                "issues": total_issues,
                 "discussions": MOCK_DATA["metrics"]["discussions"],
                 "packages": MOCK_DATA["metrics"]["packages"],
-                "contributions": MOCK_DATA["metrics"]["contributions"],
-                "lines_of_code": MOCK_DATA["metrics"]["lines_of_code"],
-                "current_streak": MOCK_DATA["metrics"]["current_streak"],
-                "longest_streak": MOCK_DATA["metrics"]["longest_streak"]
+                "contributions": contributions_count,
+                "lines_of_code": lines_of_code,
+                "current_streak": current_streak,
+                "longest_streak": longest_streak
             },
             "languages": formatted_langs,
-            "pinned": MOCK_DATA["pinned"],  # Pinned items require specific GraphQL node mapping, merge mockup
+            "pinned": pinned_repos,
+            "contribution_calendar": contribution_weeks,
             "activity": activity,
             "commits": MOCK_DATA["commits"],
             "analytics": MOCK_DATA["analytics"],
-            "impact": MOCK_DATA["impact"],
+            "impact": {
+                "stars_received": total_stars,
+                "forks": total_forks,
+                "watchers": total_watchers,
+                "contributors": 3,
+                "releases": len([r for r in repos if r.get("has_downloads")]),
+                "downloads": 120,
+                "community_score": community_score,
+                "impact_score": impact_score,
+                "developer_rank": "A-Grade Core"
+            },
             "insights": MOCK_DATA["insights"],
-            "current_project": MOCK_DATA["current_project"],
+            "current_project": {
+                "name": repos[0].get("name") if repos else "JobGuard-AI",
+                "branch": repos[0].get("default_branch") if repos else "main",
+                "last_commit": "Latest sync complete",
+                "status": "Active Development",
+                "updated": "Syncing recently",
+                "languages": [repos[0].get("language")] if repos and repos[0].get("language") else ["Python"]
+            },
             "badges": MOCK_DATA["badges"]
         }
 

@@ -235,7 +235,7 @@ export const GitHubDashboard: React.FC = () => {
     );
   }
 
-  const { profile, metrics, languages, pinned, activity, commits, analytics, impact, insights, current_project, badges } = data.data;
+  const { profile, metrics, languages, pinned, contribution_calendar, activity, commits, analytics, impact, insights, current_project, badges } = data.data;
   const isDemo = data.mode === 'DEMO_MODE' || data.mode === 'RATE_LIMIT_DEMO' || data.mode === 'CLIENT_FALLBACK_DEMO';
 
   // Format Recharts variables
@@ -451,25 +451,20 @@ export const GitHubDashboard: React.FC = () => {
               CONTRIBUTION HEATMAP PIPELINE
             </h3>
           </div>
-          {/* Simulated contribution squares track */}
+          {/* Live contribution calendar grids */}
           <div className="overflow-x-auto pb-2 scrollbar-none">
             <div className="flex gap-[3px] min-w-[850px] justify-between px-2">
-              {Array.from({ length: 45 }).map((_, colIdx) => (
+              {contribution_calendar.map((week, colIdx) => (
                 <div key={colIdx} className="flex flex-col gap-[3px]">
-                  {Array.from({ length: 7 }).map((_, rowIdx) => {
-                    // Randomize commit frequency colors
-                    const randVal = Math.random();
+                  {week.contributionDays.map((day, rowIdx) => {
+                    const count = day.contributionCount;
                     let colorClass = 'bg-slate-900/60 border-white/5';
-                    let tooltip = '0 commits';
-                    if (randVal > 0.85) {
+                    if (count > 4) {
                       colorClass = 'bg-brand-green border-brand-green/20 shadow-[0_0_6px_rgba(34,197,94,0.4)]';
-                      tooltip = '4 commits';
-                    } else if (randVal > 0.65) {
+                    } else if (count > 2) {
                       colorClass = 'bg-brand-cyan/60 border-brand-cyan/20 shadow-[0_0_6px_rgba(6,182,212,0.3)]';
-                      tooltip = '2 commits';
-                    } else if (randVal > 0.45) {
+                    } else if (count > 0) {
                       colorClass = 'bg-brand-cyan/25 border-brand-cyan/10';
-                      tooltip = '1 commit';
                     }
 
                     return (
@@ -479,7 +474,7 @@ export const GitHubDashboard: React.FC = () => {
                       >
                         {/* Tooltip */}
                         <span className="absolute bottom-6 left-1/2 -translate-x-1/2 scale-0 group-hover:scale-100 transition-all duration-150 origin-bottom px-2 py-0.5 rounded bg-slate-950/95 border border-brand-cyan/25 text-[8px] font-mono-tech text-brand-cyan whitespace-nowrap pointer-events-none z-10 shadow-[0_4px_12px_rgba(0,0,0,0.5)]">
-                          {tooltip}
+                          {count} commit{count !== 1 ? 's' : ''} on {day.date}
                         </span>
                       </div>
                     );
