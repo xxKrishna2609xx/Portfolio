@@ -34,11 +34,11 @@ export const StatsConsole: React.FC = () => {
   const [activeCategory, setActiveCategory] = useState<string>('hackathons');
 
   const stats = [
-    { label: 'PROJECTS DEPLOYED', val: 15, suffix: '+' },
-    { label: 'REPOSITORIES RUNNING', val: 24, suffix: '' },
-    { label: 'TOTAL COMMITS', val: 500, suffix: '+' },
-    { label: 'TECH STACKS', val: 18, suffix: '+' },
-    { label: 'HACKATHONS SPRINTED', val: 5, suffix: '' },
+    { label: 'PROJECTS DEPLOYED', val: Number(import.meta.env.VITE_STATS_PROJECTS_DEPLOYED) || 15, suffix: '+' },
+    { label: 'REPOSITORIES RUNNING', val: Number(import.meta.env.VITE_STATS_REPOSITORIES_RUNNING) || 24, suffix: '' },
+    { label: 'TOTAL COMMITS', val: Number(import.meta.env.VITE_STATS_TOTAL_COMMITS) || 500, suffix: '+' },
+    { label: 'TECH STACKS', val: Number(import.meta.env.VITE_STATS_TECH_STACKS) || 18, suffix: '+' },
+    { label: 'HACKATHONS SPRINTED', val: Number(import.meta.env.VITE_STATS_HACKATHONS_SPRINTED) || 5, suffix: '' },
   ];
 
   const categories: Record<string, { title: string; subtitle: string; desc: string; icon: any }> = {

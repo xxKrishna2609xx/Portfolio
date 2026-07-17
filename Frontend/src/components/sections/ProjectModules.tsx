@@ -30,8 +30,8 @@ export const ProjectModules: React.FC = () => {
       tech: ['React', 'Python', 'FastAPI', 'LangGraph', 'Gemini API', 'SHAP'],
       challenges: 'Translating complex SHAP mathematical local models into actionable, human-readable safety indexes using LLM reasoning structures.',
       features: ['Fake Job Detection', 'PDF Security Reports', 'Explainable AI HUD', 'Multi-Agent Analysis flow'],
-      github: 'https://github.com',
-      demo: 'https://demo.com',
+      github: import.meta.env.VITE_PROJECT_JOBGUARD_GITHUB || 'https://github.com',
+      demo: import.meta.env.VITE_PROJECT_JOBGUARD_DEMO || 'https://demo.com',
       mockupType: 'nodes',
     },
     {
@@ -41,8 +41,8 @@ export const ProjectModules: React.FC = () => {
       tech: ['React', 'FastAPI', 'Firebase', 'MongoDB'],
       challenges: 'Optimizing high-frequency listing search queries and handling concurrent authentication states across Mongo DB collections.',
       features: ['Business Directory', 'Admin Moderation Console', 'OAuth Authentication', 'Highly polished Responsive UI'],
-      github: 'https://github.com',
-      demo: 'https://demo.com',
+      github: import.meta.env.VITE_PROJECT_LISTING_WEB_GITHUB || 'https://github.com',
+      demo: import.meta.env.VITE_PROJECT_LISTING_WEB_DEMO || 'https://demo.com',
       mockupType: 'dashboard',
     },
     {
@@ -52,7 +52,7 @@ export const ProjectModules: React.FC = () => {
       tech: ['Flutter', 'FastAPI', 'Firebase', 'Material Design'],
       challenges: 'Syncing local mobile cache with remote NoSQL schemas over unstable cellular connections, utilizing custom asynchronous buffers.',
       features: ['Native Performance', 'Fast REST API Integrations', 'Firebase Cloud Syncing', 'Responsive Mobile Layouts'],
-      github: 'https://github.com',
+      github: import.meta.env.VITE_PROJECT_LISTING_APP_GITHUB || 'https://github.com',
       mockupType: 'mobile',
     },
     {
@@ -62,8 +62,8 @@ export const ProjectModules: React.FC = () => {
       tech: ['Python', 'Streamlit', 'Plotly', 'Xarray'],
       challenges: 'Handling multi-dimensional NetCDF meteorological grids and rendering interactive geospatial projections under 2 seconds.',
       features: ['Climate Science Telemetry', 'Global Thermal Heatmaps', 'Time Series Projections', 'Interactive Science Cockpit'],
-      github: 'https://github.com',
-      demo: 'https://demo.com',
+      github: import.meta.env.VITE_PROJECT_PYCLIMATE_GITHUB || 'https://github.com',
+      demo: import.meta.env.VITE_PROJECT_PYCLIMATE_DEMO || 'https://demo.com',
       mockupType: 'charts',
     },
   ];
