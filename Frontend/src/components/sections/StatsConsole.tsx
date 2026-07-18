@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Trophy, Award, FileCode, CheckSquare, Zap } from 'lucide-react';
+import { Trophy, Award, FileCode, Zap } from 'lucide-react';
 
 interface CounterProps {
   end: number;
@@ -65,12 +65,6 @@ export const StatsConsole: React.FC = () => {
       subtitle: 'Production Backend Engineering',
       desc: 'Acquired core enterprise industry experience, building secure database queries, writing API pipelines, and reviewing server loads at Right Ads Digital.',
       icon: FileCode,
-    },
-    opensource: {
-      title: 'Open Source',
-      subtitle: 'Community Code Integrations',
-      desc: 'Contributed modules, resolved issues, and optimized documentation across public codebases and scripting tools on GitHub.',
-      icon: CheckSquare,
     },
   };
 

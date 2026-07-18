@@ -19,7 +19,7 @@ const GithubIcon = (props: React.SVGProps<SVGSVGElement>) => (
 
 export const CommandCenter: React.FC = () => {
   const [form, setForm] = useState({ name: '', email: '', message: '' });
-  const [status, setStatus] = useState<'idle' | 'sending' | 'success'>('idle');
+  const [status, setStatus] = useState<'idle' | 'sending' | 'success' | 'error'>('idle');
 
   const socialLinks = [
     { label: 'EMAIL DIRECT', icon: Mail, url: `mailto:${LINKS.email}`, color: 'hover:border-brand-cyan hover:text-brand-cyan hover:shadow-[0_0_12px_rgba(6,182,212,0.25)]' },
@@ -29,16 +29,30 @@ export const CommandCenter: React.FC = () => {
   ];
 
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!form.name || !form.email || !form.message) return;
 
     setStatus('sending');
-    setTimeout(() => {
+    try {
+      const res = await fetch("http://localhost:8000/api/contact", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify(form)
+      });
+      if (!res.ok) {
+        throw new Error("Server transmission error");
+      }
       setStatus('success');
       setForm({ name: '', email: '', message: '' });
       setTimeout(() => setStatus('idle'), 2500);
-    }, 1200);
+    } catch (err) {
+      console.error(err);
+      setStatus('error');
+      setTimeout(() => setStatus('idle'), 3000);
+    }
   };
 
   return (
@@ -150,6 +164,8 @@ export const CommandCenter: React.FC = () => {
                 className={`w-full py-3.5 rounded-xl text-xs uppercase font-bold tracking-wider flex items-center justify-center gap-2.5 transition-all duration-300 interactive select-none ${
                   status === 'success'
                     ? 'bg-brand-green text-black shadow-[0_0_15px_rgba(34,197,94,0.4)] border border-brand-green'
+                    : status === 'error'
+                    ? 'bg-red-950/80 border border-red-500/50 text-red-400 shadow-[0_0_15px_rgba(239,68,68,0.15)]'
                     : 'bg-brand-cyan hover:bg-brand-cyan/85 text-black shadow-[0_0_15px_rgba(6,182,212,0.35)] border border-brand-cyan disabled:opacity-75'
                 }`}
               >
@@ -172,6 +188,11 @@ export const CommandCenter: React.FC = () => {
                     <Check className="w-4 h-4" />
                     Transmission Logged ✓
                   </>
+                )}
+                {status === 'error' && (
+                  <span>
+                    Transmission Intercepted (Failed)
+                  </span>
                 )}
               </button>
             </form>

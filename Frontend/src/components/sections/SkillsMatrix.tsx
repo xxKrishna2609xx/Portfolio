@@ -35,7 +35,7 @@ export const SkillsMatrix: React.FC = () => {
       { name: 'Python', exp: 'Expert', projects: ['JobGuard AI', 'PyClimate Explorer'], usage: 'High frequency (Model training, state graphs)', desc: 'Versatile backend language, widely treated as the core programming syntax for artificial intelligence operations.' },
       { name: 'Scikit Learn', exp: 'Advanced', projects: ['JobGuard AI'], usage: 'Medium frequency (Data classification classifiers)', desc: 'Comprehensive Python ML toolbox for data analysis, classification, and statistical regression modeling.' },
       { name: 'LangGraph', exp: 'Advanced', projects: ['JobGuard AI'], usage: 'Medium frequency (Stateful multi-agent workflows)', desc: 'Orchestration library for building stateful, multi-agent LLM systems with cycle loops and graph steps.' },
-      { name: 'Gemini API', exp: 'Expert', projects: ['JobGuard AI', 'AIAssistant'], usage: 'High frequency (LLM integrations)', desc: 'Google developer endpoint accessing multimodal models (like Flash or Pro) for text, code, and media reasoning.' },
+      { name: 'RAG', exp: 'Expert', projects: ['JobGuard AI'], usage: 'High frequency (Semantic search, Vector DBs)', desc: 'Retrieval-Augmented Generation frameworks querying semantic databases to ground large language models with accurate private document context.' },
       { name: 'Machine Learning', exp: 'Advanced', projects: ['JobGuard AI', 'PyClimate Explorer'], usage: 'High frequency (Analytical data science)', desc: 'Statistical engineering algorithms designed to learn patterns from datasets and evaluate validation predictions.' },
     ],
     Database: [

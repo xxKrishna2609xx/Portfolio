@@ -18,8 +18,32 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+from pydantic import BaseModel
+import pymongo
+import datetime
+
 GITHUB_PAT = os.getenv("GITHUB_PAT")
 GITHUB_USERNAME = "xxKrishna2609xx"
+
+# MongoDB Database initialization
+MONGODB_URI = os.getenv("MONGODB_URI", "mongodb://localhost:27017")
+try:
+    # Set a 2-second connection timeout so the server doesn't hang if Mongo isn't running
+    db_client = pymongo.MongoClient(MONGODB_URI, serverSelectionTimeoutMS=2000)
+    db = db_client["portfolio_db"]
+    messages_col = db["contact_messages"]
+    # Ping the server to check connectivity
+    db_client.server_info()
+    print("Successfully connected to MongoDB.")
+except Exception as e:
+    db = None
+    messages_col = None
+    print(f"MongoDB connection failed: {e}. Messages will be logged locally only.")
+
+class ContactForm(BaseModel):
+    name: str
+    email: str
+    message: str
 
 # In-Memory Cache parameters
 CACHE = {}
@@ -48,6 +72,103 @@ def generate_mock_calendar():
             current_date += datetime.timedelta(days=1)
         mock_weeks.append({"contributionDays": week_days})
     return mock_weeks
+
+def compute_analytics(repos, events, total_stars, public_repos):
+    import datetime
+    import math
+    
+    # 1. Weekly commits frequency (last 6 weeks)
+    today = datetime.date.today()
+    week_starts = []
+    for i in range(6):
+        start_date = today - datetime.timedelta(days=(5 - i) * 7 + today.weekday())
+        week_starts.append(start_date)
+        
+    commits_frequency = []
+    for i in range(6):
+        commits_frequency.append({
+            "week": f"W{i+1}",
+            "commits": 0
+        })
+        
+    for e in events:
+        if e.get("type") == "PushEvent":
+            created_str = e.get("created_at", "")
+            if created_str:
+                try:
+                    created_date = datetime.datetime.strptime(created_str[:10], "%Y-%m-%d").date()
+                    for idx, start in enumerate(week_starts):
+                        end = start + datetime.timedelta(days=7)
+                        if start <= created_date < end:
+                            payload = e.get("payload", {})
+                            commit_count = payload.get("size", 1)
+                            commits_frequency[idx]["commits"] += commit_count
+                            break
+                except Exception:
+                    pass
+                    
+    has_commits = any(w["commits"] > 0 for w in commits_frequency)
+    if not has_commits:
+        for i in range(6):
+            commits_frequency[i]["commits"] = int(10 + math.sin(i * 1.2) * 5 + (public_repos % 3))
+            
+    # 2. Repository and Stars Growth (last 6 months)
+    month_names = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"]
+    months_labels = []
+    months_dates = []
+    current_year = today.year
+    current_month = today.month
+    
+    for i in range(5, -1, -1):
+        m = current_month - i
+        y = current_year
+        if m <= 0:
+            m += 12
+            y -= 1
+        months_labels.append(month_names[m - 1])
+        months_dates.append(datetime.date(y, m, 1))
+        
+    repo_creation_timeline = []
+    stars_growth = []
+    
+    for label in months_labels:
+        repo_creation_timeline.append({"month": label, "count": 0})
+        stars_growth.append({"month": label, "stars": 0})
+        
+    repos_by_month = [0] * 6
+    for r in repos:
+        created_str = r.get("created_at", "")
+        if created_str:
+            try:
+                created_date = datetime.datetime.strptime(created_str[:10], "%Y-%m-%d").date()
+                for idx, start in enumerate(months_dates):
+                    next_month_year = start.year
+                    next_month_val = start.month + 1
+                    if next_month_val > 12:
+                        next_month_val = 1
+                        next_month_year += 1
+                    end = datetime.date(next_month_year, next_month_val, 1)
+                    if start <= created_date < end:
+                        repos_by_month[idx] += 1
+                        break
+            except Exception:
+                pass
+                
+    running_repos = max(0, public_repos - sum(repos_by_month))
+    for idx in range(6):
+        running_repos += repos_by_month[idx]
+        repo_creation_timeline[idx]["count"] = running_repos
+        
+    stars_total = total_stars if total_stars > 0 else 5
+    for idx in range(6):
+        ratio = repo_creation_timeline[idx]["count"] / max(1, public_repos)
+        stars_growth[idx]["stars"] = int(stars_total * ratio)
+        
+    return {
+        "repo_creation_timeline": repo_creation_timeline,
+        "stars_growth": stars_growth,
+        "commits_frequency": commits_frequency
+    }
 
 # High-Fidelity Mock Database for Failsafe Fallbacks
 MOCK_DATA = {
@@ -497,6 +618,9 @@ def fetch_github_dashboard():
         community_score = min(100, 70 + (total_stars * 1) + (total_forks * 2))
         impact_score = min(100, 65 + (profile.get("followers", 0) * 0.5) + (total_stars * 0.8))
 
+        # Compute dynamic analytics timelines
+        computed_analytics = compute_analytics(repos, events, total_stars, profile.get("public_repos", 24))
+
         live_dataset = {
             "profile": {
                 "avatar_url": profile.get("avatar_url"),
@@ -531,7 +655,7 @@ def fetch_github_dashboard():
             "contribution_calendar": contribution_weeks,
             "activity": activity,
             "commits": MOCK_DATA["commits"],
-            "analytics": MOCK_DATA["analytics"],
+            "analytics": computed_analytics,
             "impact": {
                 "stars_received": total_stars,
                 "forks": total_forks,
@@ -562,6 +686,40 @@ def fetch_github_dashboard():
         # Failsafe fallback on rate limit / api errors
         print(f"GitHub API Error: {err}. Serving cached mock databank.")
         return {"mode": "RATE_LIMIT_DEMO", "data": MOCK_DATA}
+
+@app.post("/api/contact")
+async def save_contact_message(form: ContactForm):
+    print(f"Received message from {form.name} ({form.email}): {form.message}")
+    
+    message_doc = {
+        "name": form.name,
+        "email": form.email,
+        "message": form.message,
+        "timestamp": datetime.datetime.utcnow()
+    }
+    
+    db_success = False
+    if messages_col is not None:
+        try:
+            messages_col.insert_one(message_doc)
+            db_success = True
+            print("Message saved to MongoDB.")
+        except Exception as e:
+            print(f"Failed to insert message into MongoDB: {e}")
+            
+    try:
+        log_dir = os.path.join(os.path.dirname(__file__), "logs")
+        os.makedirs(log_dir, exist_ok=True)
+        log_path = os.path.join(log_dir, "contact_submissions.log")
+        with open(log_path, "a", encoding="utf-8") as f:
+            f.write(f"[{datetime.datetime.utcnow().isoformat()}] Name: {form.name} | Email: {form.email} | Message: {form.message}\n")
+    except Exception as e:
+        print(f"Failed to write to local log file backup: {e}")
+        
+    if db_success:
+        return {"status": "SUCCESS", "message": "Transmission saved to MongoDB."}
+    else:
+        return {"status": "LOCAL_SAVED", "message": "Transmission cached locally (MongoDB offline)."}
 
 if __name__ == "__main__":
     import uvicorn
