@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Mail, FileText, Send, Check } from 'lucide-react';
-import { LINKS } from '../../config';
+import { LINKS, API_BASE_URL } from '../../config';
 
 const LinkedinIcon = (props: React.SVGProps<SVGSVGElement>) => (
   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}>
@@ -35,7 +35,7 @@ export const CommandCenter: React.FC = () => {
 
     setStatus('sending');
     try {
-      const res = await fetch("http://localhost:8000/api/contact", {
+      const res = await fetch(`${API_BASE_URL}/api/contact`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json"

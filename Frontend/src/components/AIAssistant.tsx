@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { MessageSquare, X, Send, Bot, User as UserIcon } from 'lucide-react';
-import { LINKS } from '../config';
+import { LINKS, API_BASE_URL } from '../config';
 
 interface Message {
   sender: 'ai' | 'user';
@@ -62,7 +62,7 @@ export const AIAssistant: React.FC = () => {
     return `System Query: "${query}". I am currently running in simulation mode. For specific inquires, please send Krishna a direct message using the CommandCenter form at the bottom of the page!`;
   };
 
-  const handleSend = (textToSend: string) => {
+  const handleSend = async (textToSend: string) => {
     if (!textToSend.trim()) return;
 
     const time = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
@@ -72,12 +72,30 @@ export const AIAssistant: React.FC = () => {
     setInput('');
     setIsTyping(true);
 
-    // AI typing simulation
-    setTimeout(() => {
+    try {
+      const res = await fetch(`${API_BASE_URL}/api/chat`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({ message: textToSend })
+      });
+      
+      setIsTyping(false);
+      
+      if (!res.ok) {
+        throw new Error("Chat API failed");
+      }
+      
+      const data = await res.json();
+      setMessages(prev => [...prev, { sender: 'ai', text: data.reply, timestamp: time }]);
+    } catch (err) {
+      console.warn("FastAPI AI Chat Endpoint offline or Key missing. Falling back to local catalog index.", err);
+      // Fallback to client-side catalog responses
       setIsTyping(false);
       const reply = getSystemResponse(textToSend);
       setMessages(prev => [...prev, { sender: 'ai', text: reply, timestamp: time }]);
-    }, 750);
+    }
   };
 
   return (

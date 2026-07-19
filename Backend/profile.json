@@ -1,0 +1,378 @@
+{
+  "personal": {
+    "name": "Krishna Goyal",
+    "title": "Backend Developer | AI Engineer | Flutter Developer",
+    "headline": "Building intelligent software that solves real-world problems.",
+    "location": "India",
+    "education": {
+      "university": "GLA University, Mathura",
+      "degree": "Bachelor of Technology",
+      "branch": "Computer Science Engineering",
+      "specialization": "Artificial Intelligence & Data Science",
+      "graduation_year": 2028
+    },
+    "status": {
+      "availability": "Open to internships and software engineering opportunities",
+      "current_focus": [
+        "FastAPI",
+        "Flutter",
+        "Artificial Intelligence",
+        "Backend Development",
+        "System Design"
+      ]
+    }
+  },
+  "about": {
+    "summary": "I am a Computer Science undergraduate passionate about building scalable backend systems, AI-powered applications, and modern cross-platform mobile apps. I enjoy solving real-world problems through software and continuously explore emerging technologies including Agentic AI, Large Language Models, Retrieval-Augmented Generation (RAG), and cloud-based architectures.",
+    "mission": "To build intelligent products that solve real-world problems while continuously improving as a software engineer.",
+    "interests": [
+      "Backend Engineering",
+      "Artificial Intelligence",
+      "Machine Learning",
+      "Agentic AI",
+      "Flutter Development",
+      "System Design",
+      "Cloud Computing",
+      "Open Source",
+      "Developer Experience"
+    ]
+  },
+  "experience": [
+    {
+      "company": "Right Ads Digital",
+      "role": "Web Developer Intern",
+      "duration": "2026",
+      "type": "Internship",
+      "description": "Worked as a Web Developer Intern, developing scalable web and mobile applications while collaborating on production-ready software.",
+      "responsibilities": [
+        "Developed a Business Listing Website similar to Yelp and Justdial.",
+        "Built scalable REST APIs using FastAPI.",
+        "Integrated Firebase Authentication.",
+        "Worked with MongoDB for database management.",
+        "Implemented Admin Dashboard functionalities.",
+        "Developed reusable backend architecture.",
+        "Currently building a Flutter Business Listing mobile application.",
+        "Collaborated with the team to deliver production-ready software."
+      ],
+      "technologies": [
+        "React",
+        "TypeScript",
+        "FastAPI",
+        "Flutter",
+        "MongoDB",
+        "Firebase",
+        "Tailwind CSS",
+        "Python"
+      ]
+    }
+  ],
+  "skills": {
+    "languages": [
+      "Python",
+      "Java",
+      "C++",
+      "JavaScript",
+      "TypeScript",
+      "Dart",
+      "SQL"
+    ],
+    "frontend": [
+      "React",
+      "Vite",
+      "Tailwind CSS",
+      "HTML",
+      "CSS",
+      "Framer Motion"
+    ],
+    "backend": [
+      "FastAPI",
+      "Flask",
+      "Node.js",
+      "REST APIs",
+      "JWT Authentication",
+      "Authentication Systems"
+    ],
+    "mobile": [
+      "Flutter",
+      "Android Development"
+    ],
+    "database": [
+      "MongoDB",
+      "Firebase",
+      "SQL"
+    ],
+    "artificial_intelligence": [
+      "Machine Learning",
+      "Scikit-learn",
+      "LangGraph",
+      "Google Gemini API",
+      "Agentic AI",
+      "Prompt Engineering",
+      "Explainable AI",
+      "Large Language Models",
+      "SHAP",
+      "RAG Concepts"
+    ],
+    "data_science": [
+      "Pandas",
+      "NumPy",
+      "Plotly",
+      "Xarray",
+      "Climate Data Analysis"
+    ],
+    "tools": [
+      "Git",
+      "GitHub",
+      "VS Code",
+      "Android Studio",
+      "Postman"
+    ]
+  },
+  "projects": [
+    {
+      "name": "AI Resume Analyzer",
+      "category": "Artificial Intelligence",
+      "featured": true,
+      "description": "An AI-powered resume analysis platform that evaluates resumes against job descriptions, provides ATS compatibility scoring, identifies missing skills, and generates personalized recommendations using Agentic AI workflows.",
+      "problem": "Job seekers often struggle to understand why their resumes are rejected by Applicant Tracking Systems (ATS) or how well they match a specific job description.",
+      "solution": "Developed an intelligent resume analysis platform that compares resumes with job descriptions, calculates ATS compatibility, identifies missing skills, and provides AI-generated improvement suggestions.",
+      "features": [
+        "PDF Resume Upload",
+        "Resume Parsing",
+        "Job Description Analysis",
+        "ATS Compatibility Score",
+        "Skill Gap Detection",
+        "Keyword Matching",
+        "AI Resume Feedback",
+        "Project Evaluation",
+        "Experience Evaluation",
+        "Agentic AI Workflow",
+        "Personalized Recommendations"
+      ],
+      "technologies": [
+        "Python",
+        "FastAPI",
+        "React",
+        "TypeScript",
+        "Tailwind CSS",
+        "LangGraph",
+        "Google Gemini API",
+        "Pydantic",
+        "PDF Processing"
+      ],
+      "highlights": [
+        "Built using Agentic AI architecture.",
+        "Provides ATS compatibility analysis.",
+        "Compares resumes with job descriptions.",
+        "Uses LLM reasoning instead of simple keyword matching.",
+        "Generates detailed AI-powered improvement suggestions."
+      ]
+    },
+    {
+      "name": "JobGuard AI",
+      "category": "Artificial Intelligence",
+      "featured": true,
+      "description": "An AI-powered fake job detection platform that analyzes job postings and predicts whether they are legitimate or fraudulent.",
+      "problem": "Job seekers often encounter fraudulent job postings that lead to scams.",
+      "solution": "Built an explainable machine learning application capable of detecting fake job listings while explaining every prediction.",
+      "features": [
+        "Machine Learning Prediction",
+        "Explainable AI",
+        "LangGraph Workflow",
+        "Google Gemini Integration",
+        "SHAP Explainability",
+        "PDF Report Generation",
+        "Interactive Dashboard"
+      ],
+      "technologies": [
+        "React",
+        "TypeScript",
+        "Python",
+        "FastAPI",
+        "Scikit-learn",
+        "LangGraph",
+        "Google Gemini API",
+        "SHAP"
+      ]
+    },
+    {
+      "name": "Business Listing Website",
+      "category": "Full Stack Development",
+      "featured": true,
+      "description": "A production-ready business directory platform similar to Yelp and Justdial.",
+      "features": [
+        "Business Listings",
+        "Search",
+        "Category Filtering",
+        "Authentication",
+        "Admin Dashboard",
+        "REST APIs",
+        "Responsive Design"
+      ],
+      "technologies": [
+        "React",
+        "FastAPI",
+        "MongoDB",
+        "Firebase",
+        "Tailwind CSS"
+      ]
+    },
+    {
+      "name": "Business Listing Mobile App",
+      "category": "Flutter",
+      "description": "Cross-platform Flutter application for discovering businesses with modern UI and seamless backend integration.",
+      "features": [
+        "Cross Platform",
+        "Material Design",
+        "Authentication",
+        "FastAPI Integration",
+        "Responsive UI"
+      ],
+      "technologies": [
+        "Flutter",
+        "Dart",
+        "FastAPI",
+        "Firebase"
+      ]
+    },
+    {
+      "name": "PyClimaExplorer",
+      "category": "Climate Analytics",
+      "featured": true,
+      "description": "Interactive climate analytics dashboard developed during HackItOut 2026 for analyzing NetCDF climate datasets.",
+      "features": [
+        "NetCDF Visualization",
+        "Interactive Global Maps",
+        "Climate Hotspot Detection",
+        "Time Series Analysis",
+        "Model Comparison",
+        "Interactive Dashboard"
+      ],
+      "technologies": [
+        "Python",
+        "Streamlit",
+        "Plotly",
+        "Pandas",
+        "NumPy",
+        "Xarray"
+      ]
+    }
+  ],
+  "achievements": {
+    "hackathons": [
+      "HackItOut 2026",
+      "HackOn Titan",
+      "HacknViz",
+      "Deviathon",
+      "IIT BHU Hackathon Finalist"
+    ],
+    "workshops": [
+      "IIT Delhi AI & Machine Learning Workshop"
+    ],
+    "highlights": [
+      "Built multiple AI-powered applications.",
+      "Completed a professional software development internship.",
+      "Developed scalable full-stack applications.",
+      "Developing production-ready Flutter applications.",
+      "Strong passion for solving real-world engineering problems."
+    ]
+  },
+  "strengths": [
+    "Backend Development",
+    "FastAPI",
+    "REST API Design",
+    "Artificial Intelligence",
+    "Machine Learning",
+    "Agentic AI",
+    "LLM Applications",
+    "Prompt Engineering",
+    "Resume Intelligence",
+    "System Design",
+    "Problem Solving",
+    "Flutter Development",
+    "React Development",
+    "Cross Platform Development",
+    "Document Processing",
+    "RAG Concepts",
+    "Developer Experience"
+  ],
+  "currently_learning": [
+    "Advanced FastAPI",
+    "Flutter",
+    "System Design",
+    "Docker",
+    "Cloud Deployment",
+    "Retrieval-Augmented Generation (RAG)",
+    "Vector Databases",
+    "Model Context Protocol (MCP)",
+    "Multi-Agent AI Systems",
+    "Kubernetes"
+  ],
+  "career_goals": {
+    "short_term": "Secure a Software Engineering internship or full-time opportunity focused on Backend Development, Artificial Intelligence, or Full Stack Engineering.",
+    "long_term": "Become a Backend Engineer specializing in AI-powered systems, scalable cloud architectures, and intelligent software products."
+  },
+  "personality": {
+    "traits": [
+      "Curious",
+      "Analytical",
+      "Self-driven",
+      "Creative",
+      "Detail-Oriented",
+      "Continuous Learner",
+      "Problem Solver"
+    ],
+    "working_style": "I enjoy building complete software products from idea to deployment. I believe in writing maintainable code, designing scalable architectures, continuously learning modern technologies, and creating software that solves real-world problems."
+  },
+  "faq": [
+    {
+      "question": "Who is Krishna Goyal?",
+      "answer": "Krishna Goyal is a Computer Science undergraduate specializing in Backend Development, Artificial Intelligence, Flutter Development, and Full Stack Engineering. He enjoys building intelligent software that solves real-world problems."
+    },
+    {
+      "question": "What technologies does Krishna specialize in?",
+      "answer": "Krishna specializes in FastAPI, Python, React, Flutter, MongoDB, Firebase, Machine Learning, LangGraph, Google Gemini API, TypeScript, and AI-powered application development."
+    },
+    {
+      "question": "What is Krishna currently working on?",
+      "answer": "Krishna is currently developing a Flutter Business Listing application while continuously improving his expertise in Backend Engineering, Artificial Intelligence, System Design, and Cloud Technologies."
+    },
+    {
+      "question": "What kind of opportunities is Krishna looking for?",
+      "answer": "Krishna is actively looking for Backend Engineering, AI Engineering, Full Stack Development, Software Engineering, and Flutter Development internship or entry-level opportunities."
+    },
+    {
+      "question": "What is AI Resume Analyzer?",
+      "answer": "AI Resume Analyzer is an Agentic AI application that evaluates resumes against job descriptions, calculates ATS compatibility, identifies missing skills, and provides AI-powered personalized improvement suggestions using Large Language Models."
+    },
+    {
+      "question": "Which project is Krishna most proud of?",
+      "answer": "Krishna's flagship projects include AI Resume Analyzer, JobGuard AI, Business Listing Platform, and PyClimaExplorer. These projects demonstrate expertise in AI, backend development, mobile development, and full-stack engineering."
+    },
+    {
+      "question": "Does Krishna have experience with Agentic AI?",
+      "answer": "Yes. Krishna has built multiple Agentic AI applications using LangGraph and Google Gemini API, including AI Resume Analyzer and JobGuard AI, where intelligent multi-step reasoning workflows are used to deliver context-aware responses."
+    }
+  ],
+  "chatbot_rules": {
+    "tone": "Professional, friendly, confident, concise, and helpful.",
+    "if_unknown": "If the requested information is unavailable, politely mention that the information is not currently available instead of making assumptions.",
+    "avoid": [
+      "Inventing achievements",
+      "Exaggerating experience",
+      "Guessing project details",
+      "Claiming technologies not used",
+      "Providing inaccurate information"
+    ],
+    "always_highlight": [
+      "Backend Development",
+      "FastAPI",
+      "Artificial Intelligence",
+      "Agentic AI",
+      "Flutter",
+      "Real-world Projects",
+      "Problem Solving",
+      "Continuous Learning"
+    ]
+  }
+}

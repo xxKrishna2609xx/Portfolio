@@ -1,3 +1,5 @@
+import { API_BASE_URL } from '../config';
+
 export interface ProfileData {
   avatar_url: string;
   username: string;
@@ -317,7 +319,7 @@ const CLIENT_MOCK_DATA: DashboardResponse["data"] = {
 
 export const fetchGithubDashboard = async (): Promise<DashboardResponse> => {
   try {
-    const res = await fetch("http://localhost:8000/api/github/dashboard");
+    const res = await fetch(`${API_BASE_URL}/api/github/dashboard`);
     if (!res.ok) {
       throw new Error("Server response failed");
     }

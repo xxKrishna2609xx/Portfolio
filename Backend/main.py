@@ -45,6 +45,62 @@ class ContactForm(BaseModel):
     email: str
     message: str
 
+class ChatMessage(BaseModel):
+    message: str
+
+import json
+
+def load_developer_profile():
+    profile_path = os.path.join(os.path.dirname(__file__), "profile.json")
+    if os.path.exists(profile_path):
+        try:
+            with open(profile_path, "r", encoding="utf-8") as f:
+                return json.load(f)
+        except Exception as e:
+            print(f"Error loading profile.json: {e}")
+    # Default fallback matches current config
+    return {
+        "name": "Krishna Goyal",
+        "role": "Backend & AI Engineer",
+        "education": "B.Tech in Computer Science",
+        "focus": "FastAPI / LangGraph / Flutter",
+        "location": "India (GMT+5:30)",
+        "contact": {
+            "email": "krishna26sep@gmail.com",
+            "linkedin": "https://www.linkedin.com/in/krishna-goyal-799629265/",
+            "github": "https://github.com/xxKrishna2609xx"
+        },
+        "tech_matrix": {
+            "backend": ["FastAPI", "Node.js", "Firebase", "MongoDB"],
+            "frontend": ["React", "Flutter", "Tailwind CSS", "TypeScript"],
+            "ai_ml": ["Python", "Scikit-Learn", "LangGraph", "Gemini API", "RAG"],
+            "databases": ["MongoDB", "Firebase", "SQL"],
+            "tools": ["Git", "GitHub", "Docker", "Android Studio", "VS Code"]
+        },
+        "experience": [
+            {
+                "company": "Right Ads Digital",
+                "role": "Web Developer Intern",
+                "duration": "June 2025 - Present",
+                "details": [
+                    "Built Business Listing Website using React, FastAPI, MongoDB.",
+                    "Developed Flutter catalog mobile app; integrated Firebase auth.",
+                    "Co-designed indexing schemas scaling database lookups by 15%."
+                ]
+            }
+        ],
+        "projects": [
+            {
+                "name": "JobGuard AI",
+                "tagline": "Explainable AI Fake Job Detection Suite",
+                "tech_stack": ["React", "FastAPI", "LangGraph", "Gemini API", "SHAP"],
+                "description": "Explainable AI Fake Job Detection Suite built with React, FastAPI, LangGraph, and SHAP to analyze job validity."
+            }
+        ]
+    }
+
+GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
+
 # In-Memory Cache parameters
 CACHE = {}
 CACHE_TTL = 600  # 10 minutes cache duration
@@ -721,6 +777,57 @@ async def save_contact_message(form: ContactForm):
     else:
         return {"status": "LOCAL_SAVED", "message": "Transmission cached locally (MongoDB offline)."}
 
+@app.post("/api/chat")
+async def chat_with_assistant(payload: ChatMessage):
+    if not GEMINI_API_KEY:
+        print("Gemini API key is not configured in backend environment. Chat falling back to client-side catalog.")
+        raise HTTPException(status_code=501, detail="Gemini API Key not configured on host.")
+        
+    profile = load_developer_profile()
+    profile_json_str = json.dumps(profile, indent=2)
+        
+    system_instruction = (
+        "You are 'KRISHNA OS Agent', a futuristic AI representative for Krishna Goyal.\n"
+        "Your purpose is STRICTLY to answer questions about Krishna Goyal's background, skills, experience, projects, and workflow.\n\n"
+        "Here is the official database of Krishna's profile in JSON format to ground your answers:\n"
+        f"```json\n{profile_json_str}\n```\n\n"
+        "CRITICAL RULES & GUIDELINES:\n"
+        "1. Only answer questions related to Krishna Goyal, his portfolio, his skills, and his projects. Use the facts in the JSON database.\n"
+        "2. If the user asks about unrelated topics (e.g., general coding help, recipes, math, generic jokes, non-portfolio queries), politely decline and redirect them to query Krishna's tech stack or projects.\n"
+        "   Refer to the rules in 'chatbot_rules' in the JSON database: do not invent achievements, do not exaggerate experience, and keep the tone professional, friendly, confident, and helpful.\n"
+        "3. Keep responses concise (under 3-4 sentences), futuristic, professional, and on-theme.\n"
+        "4. Do not hallucinate or guess details. If the requested information is unavailable, politely state that the information is not currently available instead of making assumptions, as instructed by the chatbot rules.\n"
+    )
+    
+    url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key={GEMINI_API_KEY}"
+    headers = {"Content-Type": "application/json"}
+    body = {
+        "contents": [
+            {
+                "parts": [
+                    {"text": f"{system_instruction}\n\nUser: {payload.message}\nKrishna OS Agent:"}
+                ]
+            }
+        ]
+    }
+    
+    try:
+        res = requests.post(url, headers=headers, json=body, timeout=8)
+        if res.status_code == 200:
+            candidates = res.json().get("candidates", [])
+            if candidates:
+                reply = candidates[0].get("content", {}).get("parts", [{}])[0].get("text", "")
+                if reply:
+                    return {"reply": reply.strip()}
+            
+        print(f"Gemini API returned error: {res.status_code} - {res.text}")
+        raise HTTPException(status_code=502, detail="Gemini translation channel error.")
+    except Exception as e:
+        print(f"Chat connection to Gemini failed: {e}")
+        raise HTTPException(status_code=500, detail="Gemini connection timeout or network issue.")
+
 if __name__ == "__main__":
     import uvicorn
-    uvicorn.run(app, host="127.0.0.1", port=8000)
+    port = int(os.getenv("PORT", 8000))
+    uvicorn.run(app, host="0.0.0.0", port=port)
+
