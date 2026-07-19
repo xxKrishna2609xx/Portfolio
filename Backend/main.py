@@ -21,6 +21,7 @@ app.add_middleware(
 from pydantic import BaseModel
 import pymongo
 import datetime
+import certifi
 
 GITHUB_PAT = os.getenv("GITHUB_PAT")
 GITHUB_USERNAME = "xxKrishna2609xx"
@@ -28,8 +29,12 @@ GITHUB_USERNAME = "xxKrishna2609xx"
 # MongoDB Database initialization
 MONGODB_URI = os.getenv("MONGODB_URI", "mongodb://localhost:27017")
 try:
-    # Set a 2-second connection timeout so the server doesn't hang if Mongo isn't running
-    db_client = pymongo.MongoClient(MONGODB_URI, serverSelectionTimeoutMS=2000)
+    mongo_kwargs = {"serverSelectionTimeoutMS": 5000}
+    # Use certifi CA certificates for MongoDB Atlas cloud SSL/TLS connection verification
+    if "mongodb+srv://" in MONGODB_URI or "tls=true" in MONGODB_URI.lower() or "ssl=true" in MONGODB_URI.lower() or "mongodb.net" in MONGODB_URI:
+        mongo_kwargs["tlsCAFile"] = certifi.where()
+
+    db_client = pymongo.MongoClient(MONGODB_URI, **mongo_kwargs)
     db = db_client["portfolio_db"]
     messages_col = db["contact_messages"]
     # Ping the server to check connectivity
@@ -39,6 +44,7 @@ except Exception as e:
     db = None
     messages_col = None
     print(f"MongoDB connection failed: {e}. Messages will be logged locally only.")
+
 
 class ContactForm(BaseModel):
     name: str
