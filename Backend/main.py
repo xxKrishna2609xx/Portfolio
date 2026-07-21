@@ -805,7 +805,7 @@ async def chat_with_assistant(payload: ChatMessage):
         "4. Do not hallucinate or guess details. If the requested information is unavailable, politely state that the information is not currently available instead of making assumptions, as instructed by the chatbot rules.\n"
     )
     
-    url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key={GEMINI_API_KEY}"
+    url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key={GEMINI_API_KEY}"
     headers = {"Content-Type": "application/json"}
     body = {
         "contents": [

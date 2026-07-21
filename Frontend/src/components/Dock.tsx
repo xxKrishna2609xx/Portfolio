@@ -45,9 +45,9 @@ export const Dock: React.FC<DockProps> = ({ onNavigate, activeSection }) => {
   };
 
   return (
-    <div className="fixed bottom-6 left-1/2 z-50 -translate-x-1/2 pointer-events-auto select-none">
+    <div className="fixed bottom-4 sm:bottom-6 left-1/2 z-50 -translate-x-1/2 pointer-events-auto select-none max-w-[95vw]">
       <div 
-        className="glass-panel px-4 py-2.5 rounded-2xl flex items-end gap-3.5 border border-white/8 shadow-[0_15px_35px_rgba(0,0,0,0.5)] transition-all duration-300"
+        className="glass-panel px-2 py-2 sm:px-4 sm:py-2.5 rounded-2xl flex items-end gap-1.5 sm:gap-3.5 border border-white/8 shadow-[0_15px_35px_rgba(0,0,0,0.5)] transition-all duration-300"
         onMouseLeave={() => setHoveredIdx(null)}
       >
         {dockItems.map((item, idx) => {
@@ -61,7 +61,7 @@ export const Dock: React.FC<DockProps> = ({ onNavigate, activeSection }) => {
               key={item.id}
               onClick={() => onNavigate(item.id)}
               onMouseEnter={() => setHoveredIdx(idx)}
-              className="relative flex flex-col items-center justify-center p-2 rounded-xl transition-all duration-200 focus:outline-none group interactive"
+              className="relative flex flex-col items-center justify-center p-1.5 sm:p-2 rounded-xl transition-all duration-200 focus:outline-none group interactive"
               style={{
                 transform: `scale(${scale}) translateY(${translateY}px)`,
                 transformOrigin: 'bottom center',
@@ -74,7 +74,7 @@ export const Dock: React.FC<DockProps> = ({ onNavigate, activeSection }) => {
               )}
 
               <Icon
-                className={`w-5 h-5 md:w-6 md:h-6 transition-colors duration-250 ${
+                className={`w-4 h-4 sm:w-5 sm:h-5 md:w-6 md:h-6 transition-colors duration-250 ${
                   isActive ? 'text-brand-cyan' : 'text-slate-400 group-hover:text-white'
                 }`}
               />
@@ -88,23 +88,23 @@ export const Dock: React.FC<DockProps> = ({ onNavigate, activeSection }) => {
         })}
 
         {/* Separator bar */}
-        <div className="w-[1px] h-7 bg-white/10 self-center" />
+        <div className="w-[1px] h-5 sm:h-7 bg-white/10 self-center" />
 
         {/* Resume Button Option */}
         <a
           href="#"
           onClick={(e) => {
             e.preventDefault();
-            alert("Downloading Krishna Goyal's Resume...");
+            window.open('https://www.dropbox.com/scl/fi/hw8coll690s2u3h6dxuqm/Krishna-Goyal-CV-GLA.pdf?rlkey=uxqzh6hc6d1j33zmdlbubh7xv&st=3smhtw8w&dl=0', '_blank');
           }}
-          className="relative flex flex-col items-center justify-center p-2 rounded-xl text-slate-400 hover:text-brand-green transition-transform duration-200 focus:outline-none group interactive"
+          className="relative hidden sm:flex flex-col items-center justify-center p-1.5 sm:p-2 rounded-xl text-slate-400 hover:text-brand-green transition-transform duration-200 focus:outline-none group interactive"
           onMouseEnter={() => setHoveredIdx(dockItems.length + 1)}
           style={{
             transform: hoveredIdx === dockItems.length + 1 ? 'scale(1.35) translateY(-10px)' : 'scale(1) translateY(0px)',
             transformOrigin: 'bottom center',
           }}
         >
-          <FileText className="w-5 h-5 md:w-6 md:h-6" />
+          <FileText className="w-4 h-4 sm:w-5 sm:h-5 md:w-6 md:h-6" />
           <span className="absolute bottom-14 scale-0 group-hover:scale-100 transition-all duration-150 origin-bottom px-2 py-1 rounded bg-slate-950/90 border border-brand-green/20 text-[9px] font-mono-tech uppercase tracking-wider text-brand-green backdrop-blur-md pointer-events-none whitespace-nowrap shadow-[0_4px_12px_rgba(34,197,94,0.15)]">
             Resume
           </span>

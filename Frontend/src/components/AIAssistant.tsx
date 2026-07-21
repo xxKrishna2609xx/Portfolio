@@ -99,10 +99,10 @@ export const AIAssistant: React.FC = () => {
   };
 
   return (
-    <div className="fixed bottom-6 right-6 z-50 flex flex-col items-end pointer-events-auto select-none">
+    <div className="fixed bottom-20 sm:bottom-6 right-3 sm:right-6 z-50 flex flex-col items-end pointer-events-auto select-none">
       {/* Chat window panel */}
       {isOpen && (
-        <div className="glass-panel-heavy w-[92vw] sm:w-[380px] h-[480px] rounded-2xl mb-4 overflow-hidden border border-brand-cyan/20 flex flex-col shadow-[0_15px_40px_rgba(0,0,0,0.65)] crt-effect">
+        <div className="glass-panel-heavy w-[calc(100vw-24px)] sm:w-[380px] h-[70vh] sm:h-[480px] max-h-[520px] rounded-2xl mb-3 overflow-hidden border border-brand-cyan/20 flex flex-col shadow-[0_15px_40px_rgba(0,0,0,0.65)] crt-effect">
           {/* Header */}
           <div className="bg-slate-950/40 px-4 py-3 border-b border-white/5 flex items-center justify-between">
             <div className="flex items-center gap-2.5">

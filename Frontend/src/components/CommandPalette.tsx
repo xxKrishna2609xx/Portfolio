@@ -28,7 +28,7 @@ export const CommandPalette: React.FC<CommandPaletteProps> = ({ onNavigate, onTh
     { id: 'theme-indigo', label: 'UI Theme: Set Indigo Neon OS', category: 'Themes', action: () => onThemeChange('indigo') },
     { id: 'theme-cyberpunk', label: 'UI Theme: Set Cyberpunk Core OS', category: 'Themes', action: () => onThemeChange('cyberpunk') },
     { id: 'theme-minimal', label: 'UI Theme: Set Minimal Slate OS', category: 'Themes', action: () => onThemeChange('minimal') },
-    { id: 'action-resume', label: 'System Utility: Download PDF Resume', category: 'System Actions', action: () => alert("Downloading Krishna Goyal's Resume...") },
+    { id: 'action-resume', label: 'System Utility: Download PDF Resume', category: 'System Actions', action: () => window.open('https://www.dropbox.com/scl/fi/hw8coll690s2u3h6dxuqm/Krishna-Goyal-CV-GLA.pdf?rlkey=uxqzh6hc6d1j33zmdlbubh7xv&st=3smhtw8w&dl=0', '_blank') },
     { id: 'action-github', label: 'System Link: Launch GitHub Profile', category: 'System Actions', action: () => window.open(LINKS.github, '_blank') },
   ];
 

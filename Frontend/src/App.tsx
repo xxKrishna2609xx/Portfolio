@@ -7,7 +7,7 @@ import { BootScreen } from './components/BootScreen';
 import { CommandPalette } from './components/CommandPalette';
 import { AIAssistant } from './components/AIAssistant';
 import { Dock } from './components/Dock';
-import { Hologram } from './components/Hologram';
+
 import { SystemInfo } from './components/sections/SystemInfo';
 import { SkillsMatrix } from './components/sections/SkillsMatrix';
 import { ProjectModules } from './components/sections/ProjectModules';
@@ -177,7 +177,7 @@ export default function App() {
                     Contact Me
                   </button>
                   <button
-                    onClick={() => alert("Downloading Krishna Goyal's Resume...")}
+                    onClick={() => window.open('https://www.dropbox.com/scl/fi/hw8coll690s2u3h6dxuqm/Krishna-Goyal-CV-GLA.pdf?rlkey=uxqzh6hc6d1j33zmdlbubh7xv&st=3smhtw8w&dl=0', '_blank')}
                     className="bg-slate-900/40 border border-white/5 hover:border-brand-green/25 text-slate-400 hover:text-brand-green font-mono-tech font-bold uppercase tracking-wider text-xs px-6 py-3 rounded-xl transition-all duration-250 interactive focus:outline-none"
                   >
                     Download Resume
@@ -185,9 +185,50 @@ export default function App() {
                 </div>
               </div>
 
-              {/* 3D Projection Canvas Column */}
-              <div className="lg:col-span-5 relative">
-                <Hologram />
+              {/* Developer Photo Column */}
+              <div className="lg:col-span-5 relative flex items-center justify-center">
+                <div className="relative group select-none">
+                  {/* Ambient outer glow rings */}
+                  <div className="absolute inset-0 rounded-full bg-brand-cyan/10 blur-3xl scale-110 pointer-events-none" />
+                  <div className="absolute w-[340px] h-[340px] sm:w-[400px] sm:h-[400px] rounded-full border border-brand-cyan/15 animate-pulse pointer-events-none top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2" style={{ animationDuration: '3s' }} />
+                  <div className="absolute w-[390px] h-[390px] sm:w-[460px] sm:h-[460px] rounded-full border border-brand-purple/10 pointer-events-none top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 animate-ping" style={{ animationDuration: '7s' }} />
+
+                  {/* Photo frame */}
+                  <div className="relative w-[280px] h-[280px] sm:w-[340px] sm:h-[340px] rounded-full overflow-hidden border-2 border-brand-cyan/40 shadow-[0_0_40px_rgba(6,182,212,0.3),0_0_80px_rgba(6,182,212,0.1)] group-hover:shadow-[0_0_55px_rgba(6,182,212,0.45),0_0_100px_rgba(6,182,212,0.15)] transition-shadow duration-700">
+                    <img
+                      src="/developer-photo.jpg"
+                      alt="Krishna Goyal"
+                      className="w-full h-full object-cover object-top group-hover:scale-105 transition-transform duration-700"
+                    />
+
+                    {/* Dark gradient at bottom */}
+                    <div className="absolute inset-0 bg-gradient-to-t from-slate-950/70 via-transparent to-transparent pointer-events-none" />
+
+                    {/* Animated scan beam */}
+                    <div
+                      className="absolute inset-x-0 h-[2px] bg-gradient-to-r from-transparent via-brand-cyan to-transparent opacity-70 shadow-[0_0_10px_#06b6d4] pointer-events-none"
+                      style={{ animation: 'scanline 3s linear infinite', top: '0%' }}
+                    />
+
+                    {/* VERIFIED badge */}
+                    <div className="absolute top-3 right-3 flex items-center gap-1 text-[8px] font-mono-tech text-brand-green bg-slate-950/80 border border-brand-green/30 px-2 py-0.5 rounded-full">
+                      <span className="w-1 h-1 rounded-full bg-brand-green animate-ping" />
+                      VERIFIED
+                    </div>
+
+                    {/* Bottom name overlay */}
+                    <div className="absolute bottom-4 left-0 right-0 text-center pointer-events-none">
+                      <p className="text-[10px] font-mono-tech text-brand-cyan tracking-widest uppercase">Core Developer</p>
+                    </div>
+                  </div>
+
+                  {/* Bottom label */}
+                  <div className="absolute -bottom-7 left-1/2 -translate-x-1/2 flex items-center gap-2 font-mono-tech text-[9px] text-brand-cyan tracking-[0.2em] bg-slate-950/80 border border-brand-cyan/20 px-4 py-1.5 rounded-full shadow-[0_0_12px_rgba(6,182,212,0.15)] pointer-events-none uppercase whitespace-nowrap">
+                    <span className="w-1.5 h-1.5 rounded-full bg-brand-cyan animate-ping" />
+                    [ID: KRISHNA_GOYAL]
+                    <span className="w-1.5 h-1.5 rounded-full bg-brand-purple animate-ping" style={{ animationDelay: '0.5s' }} />
+                  </div>
+                </div>
               </div>
             </div>
           </section>

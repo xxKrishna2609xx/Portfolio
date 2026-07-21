@@ -79,7 +79,7 @@ export const CommandCenter: React.FC = () => {
                   <a
                     key={idx}
                     href={link.url}
-                    onClick={link.isDownload ? (e) => { e.preventDefault(); alert("Downloading Krishna Goyal's Resume..."); } : undefined}
+                    onClick={link.isDownload ? (e) => { e.preventDefault(); window.open('https://www.dropbox.com/scl/fi/hw8coll690s2u3h6dxuqm/Krishna-Goyal-CV-GLA.pdf?rlkey=uxqzh6hc6d1j33zmdlbubh7xv&st=3smhtw8w&dl=0', '_blank'); } : undefined}
                     target={link.isDownload ? undefined : "_blank"}
                     rel="noopener noreferrer"
                     className={`flex items-center justify-between p-4 rounded-xl border border-white/5 bg-slate-900/40 transition-all duration-200 interactive ${link.color}`}
